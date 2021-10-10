@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+require('dotenv').config()
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -18,7 +19,7 @@ task("accounts", "Prints the list of accounts", async () => {
 //     ropsten: {
 //       url: `https://eth-ropsten.alchemyapi.io/v2/RLHBILMi2CAMNo21uHvUYXk7S84TdYEi`,
 //       accounts: [
-//         `0xfffffffffffffffffffffffffffffffffff`,
+//         process.env.ACCOUNT,
 //       ],
 //     },
 //   },
