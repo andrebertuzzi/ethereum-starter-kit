@@ -19,7 +19,7 @@ task("accounts", "Prints the list of accounts", async () => {
 //     ropsten: {
 //       url: `https://eth-ropsten.alchemyapi.io/v2/RLHBILMi2CAMNo21uHvUYXk7S84TdYEi`,
 //       accounts: [
-//         process.env.ACCOUNT,
+//         process.env.PRIVATE_KEY,
 //       ],
 //     },
 //   },
