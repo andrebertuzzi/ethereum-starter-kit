@@ -1,33 +1,35 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional 
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
-const hre = require("hardhat");
+const { Contract, Wallet, BigNumber, constants, providers } = require('ethers')
+const { parseUnits, formatEther, formatUnits } = require('ethers/lib/utils')
+const fetch = require('node-fetch')
+const hre = require('hardhat')
 require('dotenv').config({ path: '../.env' })
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile 
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  const ClearingHouseArtifact = require('@perp/curie-contract/artifacts/contracts/ClearingHouse.sol/ClearingHouse.json')
 
-  // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const url = 'https://metadata.perp.exchange/v2/optimism-kovan.json'
+  const metadata = await fetch(url).then((res) => res.json())
+  const clearingHouseAddr = metadata.contracts.ClearingHouse.address
 
-  await greeter.deployed();
+  const kovan = 'https://kovan.optimism.io'
+  const layer2Provider = new providers.JsonRpcProvider(kovan)
+  const layer2Wallet = new Wallet(process.env.PRIVATE_KEY).connect(layer2Provider)
 
-  console.log("Greeter deployed to:", greeter.address);
+  let clearingHouse = new Contract(
+    clearingHouseAddr,
+    ClearingHouseArtifact.abi,
+    layer2Wallet
+  )
+
+  await clearingHouse.getAccountValue(process.env.PUBLIC_KEY)
 }
+
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
 main()
   .then(() => process.exit(0))
-  .catch(error => {
-    console.error(error);
-    process.exit(1);
-  });
+  .catch((error) => {
+    console.error(error)
+    process.exit(1)
+  })

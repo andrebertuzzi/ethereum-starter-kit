@@ -28,3 +28,19 @@ solhint 'contracts/**/*.sol'
 
 ## Prettier
 npx prettier --write 'contracts/**/*.sol'
+
+
+## Optimistic Testnet Configuration
+Network Name: Optimism Kovan
+WebSite:  https://optimism.io
+ChainID:   69
+NetworkID:   69
+Symbol:   ETH
+Optimism Kovan(ETH) faucet
+http://fauceth.komputing.orgchain69address{ADDRESS}
+https://faucet.paradigm.xyz/
+https://kovan.optifaucet.com/
+Optimism Kovan(ETH) Blockchain Explorer
+https://kovan-optimistic.etherscan.io
+Optimism Kovan(ETH) RPC
+https://kovan.optimism.io/

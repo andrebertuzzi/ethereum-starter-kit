@@ -22,5 +22,9 @@
     "prettier-plugin-solidity": "^1.0.0-beta.13",
     "solhint": "^3.3.6",
     "solidity-coverage": "^0.7.16"
+  },
+  "dependencies": {
+    "@perp/curie-contract": "^1.1.0",
+    "node-fetch": "2.5"
   }
 }
