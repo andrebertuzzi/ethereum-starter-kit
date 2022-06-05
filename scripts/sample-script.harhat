@@ -1,0 +1,59 @@
+const { Contract, Wallet, BigNumber, constants, providers } = require('ethers')
+const { parseUnits, formatEther, formatUnits } = require('ethers/lib/utils')
+const fetch = require('node-fetch')
+const hre = require('hardhat')
+require('dotenv').config({ path: '../.env' })
+
+DEFAULT_DECIMALS = 18
+
+ClearingHouseArtifact = require('@perp/curie-contract/artifacts/contracts/ClearingHouse.sol/ClearingHouse.json')
+ExchangeArtifact = require('@perp/curie-contract/artifacts/contracts/Exchange.sol/Exchange.json')
+VaultArtifact = require('@perp/curie-contract/artifacts/contracts/Vault.sol/Vault.json')
+
+urlStag = 'https://metadata.perp.exchange/v2/optimism-kovan.json'
+urlProd = 'https://metadata.perp.exchange/v2/optimism.json'
+
+metadata = await fetch(urlStag).then((res) => res.json())
+
+clearingHouseAddr = metadata.contracts.ClearingHouse.address
+exchangeAddr = metadata.contracts.Exchange.address
+vaultAddr = metadata.contracts.Vault.address
+
+mainNet = 'https://mainnet.optimism.io'
+testNet = 'https://kovan.optimism.io'
+layer2Provider = new providers.JsonRpcProvider(testNet)
+layer2Wallet = new Wallet(process.env.PRIVATE_KEY).connect(layer2Provider)
+
+clearingHouse = new Contract(
+  clearingHouseAddr,
+  ClearingHouseArtifact.abi,
+  layer2Wallet
+)
+
+vault = new Contract(
+  vaultAddr,
+  VaultArtifact.abi,
+  layer2Wallet
+)
+
+amount = parseUnits('1', DEFAULT_DECIMALS)
+/* Open Position */
+position = {
+	baseToken: metadata.contracts.vETH.address,
+	isBaseToQuote: false, // false for longing
+	isExactInput: false,
+	amount: amount,
+	oppositeAmountBound: 0, // 0 for no amount limit
+	sqrtPriceLimitX96: 0, // 0 for no price limit
+	deadline: constants.MaxUint256, // 15 minutes for example
+	referralCode: 0x0000000000000000000000000000000000000000000000000000000000000000 // zero for example
+}
+
+await clearingHouse.openPosition(position)
+
+
+exchange = new Contract(exchangeAddr, ExchangeArtifact.abi, layer2Provider)
+
+await clearingHouse.getAccountValue(process.env.PUBLIC_KEY)
+
+

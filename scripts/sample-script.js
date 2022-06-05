@@ -12,14 +12,14 @@ async function main() {
   const urlStag = 'https://metadata.perp.exchange/v2/optimism-kovan.json'
   const urlProd = 'https://metadata.perp.exchange/v2/optimism.json'
 
-  const metadata = await fetch(urlProd).then((res) => res.json())
+  const metadata = await fetch(urlStag).then((res) => res.json())
 
   const clearingHouseAddr = metadata.contracts.ClearingHouse.address
   const exchangeAddr = metadata.contracts.Exchange.address
 
   const mainNet = 'https://mainnet.optimism.io'
   const testNet = 'https://kovan.optimism.io'
-  const layer2Provider = new providers.JsonRpcProvider(mainNet)
+  const layer2Provider = new providers.JsonRpcProvider(testNet)
   const layer2Wallet = new Wallet(process.env.PRIVATE_KEY).connect(layer2Provider)
 
   let clearingHouse = new Contract(
