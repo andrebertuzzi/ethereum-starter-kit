@@ -2,6 +2,7 @@
 const { Contract, Wallet, BigNumber, constants, providers } = require('ethers')
 const { parseUnits, formatEther, formatUnits } = require('ethers/lib/utils')
 const fetch = require('node-fetch')
+require('dotenv').config({ path: '../.env' })
 
 const LEVERAGE = 3
 const DEFAULT_DECIMALS = 18
@@ -15,7 +16,7 @@ let contracts = {},
 
 
 async function setupEnv() {
-  const key = await crypto.getSecret('BOT_SECRET')
+  const key = process.env.PRIVATE_KEY
   // const contracts = {}
   const url = 'https://metadata.perp.exchange/production.json'
   const metadata = await fetch(url).then((res) => res.json())
